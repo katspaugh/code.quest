@@ -179,28 +179,44 @@ export default function CoursePage() {
     setFeedback(null);
 
     try {
-      const response = await fetch("/api/feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code,
-          prompt: `${activeChallenge.prompt}\n\nMinimum requirements:\n- ${activeChallenge.acceptance_criteria.join(
-            "\n- "
-          )}`,
-          apiKey,
-          intent,
-        }),
-      });
-
-      const data = (await response.json()) as
-        | FeedbackResponse
-        | { error?: string; detail?: unknown };
+      const response = await fetch(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              {
+                role: "system",
+                content:
+                  intent === "help"
+                    ? "You are a concise coding coach. Provide syntax-focused tips based on the task and the learner's current code. Stay within the task scope. Respond with JSON only: {\"result\": \"needs_work\", \"feedback\": \"...\"}."
+                    : "You are a strict evaluator. Check only the minimum requirements for completion. Do not suggest improvements beyond the scope of the task. Respond with JSON only: {\"result\": \"ok\"|\"needs_work\", \"feedback\": \"...\"}.",
+              },
+              {
+                role: "user",
+                content: `Challenge prompt:\n${activeChallenge.prompt}\n\nMinimum requirements:\n- ${activeChallenge.acceptance_criteria.join(
+                  "\n- "
+                )}\n\nLearner code:\n${code}`,
+              },
+            ],
+            temperature: intent === "help" ? 0.5 : 0.2,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        const errorMessage =
-          "error" in data && typeof data.error === "string"
-            ? data.error
-            : "OpenAI request failed.";
+        let errorMessage = "OpenAI request failed.";
+        try {
+          const errorData = (await response.json()) as { error?: { message?: string } };
+          errorMessage = errorData.error?.message || errorMessage;
+        } catch (error) {
+          errorMessage = "OpenAI request failed.";
+        }
 
         setFeedback(null);
         setFeedbackText(errorMessage);
@@ -211,14 +227,25 @@ export default function CoursePage() {
         return;
       }
 
-      if ("result" in data && "feedback" in data) {
-        setFeedback(data);
-        setFeedbackText(data.feedback || "All requirements satisfied.");
+      const data = (await response.json()) as {
+        choices?: Array<{ message?: { content?: string } }>;
+      };
+      const content = data.choices?.[0]?.message?.content?.trim();
+
+      if (!content) {
+        setFeedback(null);
+        setFeedbackText("No feedback returned.");
         return;
       }
 
-      setFeedback(null);
-      setFeedbackText("Invalid feedback response.");
+      try {
+        const parsed = JSON.parse(content) as FeedbackResponse;
+        setFeedback(parsed);
+        setFeedbackText(parsed.feedback || "All requirements satisfied.");
+      } catch (error) {
+        setFeedback(null);
+        setFeedbackText("Invalid feedback response.");
+      }
     } catch (error) {
       setFeedback(null);
       setFeedbackText(`Request failed: ${String(error)}`);
