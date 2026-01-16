@@ -3,10 +3,11 @@ import { NextResponse } from "next/server";
 const openAiUrl = "https://api.openai.com/v1/chat/completions";
 
 export async function POST(request: Request) {
-  const { code, prompt, apiKey } = (await request.json()) as {
+  const { code, prompt, apiKey, intent } = (await request.json()) as {
     code?: string;
     prompt?: string;
     apiKey?: string;
+    intent?: "evaluate" | "help";
   };
 
   if (!apiKey) {
@@ -24,20 +25,23 @@ export async function POST(request: Request) {
   }
 
   try {
+    const isHelp = intent === "help";
+
     const payload = {
       model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content:
-            "You are a strict evaluator. Check only the minimum requirements for completion. Do not suggest improvements beyond the scope of the task. Respond with JSON only: {\"result\": \"ok\"|\"needs_work\", \"feedback\": \"...\"}.",
+          content: isHelp
+            ? "You are a concise coding coach. Provide syntax-focused tips based on the task and the learner's current code. Stay within the task scope. Respond with JSON only: {\"result\": \"needs_work\", \"feedback\": \"...\"}."
+            : "You are a strict evaluator. Check only the minimum requirements for completion. Do not suggest improvements beyond the scope of the task. Respond with JSON only: {\"result\": \"ok\"|\"needs_work\", \"feedback\": \"...\"}.",
         },
         {
           role: "user",
           content: `Challenge prompt:\n${prompt}\n\nLearner code:\n${code}`,
         },
       ],
-      temperature: 0.2,
+      temperature: isHelp ? 0.5 : 0.2,
     };
 
     const response = await fetch(openAiUrl, {
