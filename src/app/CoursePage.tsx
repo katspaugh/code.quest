@@ -239,7 +239,8 @@ export default function CoursePage() {
       }
 
       try {
-        const parsed = JSON.parse(content) as FeedbackResponse;
+        const cleaned = content.replace(/```json\n?|```/g, "").trim();
+        const parsed = JSON.parse(cleaned) as FeedbackResponse;
         setFeedback(parsed);
         setFeedbackText(parsed.feedback || "All requirements satisfied.");
       } catch (error) {
