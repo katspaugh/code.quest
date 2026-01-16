@@ -4,6 +4,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
   output: "export",
+  trailingSlash: true,
   basePath: isProduction ? "/code.quest" : undefined,
   assetPrefix: isProduction ? "/code.quest/" : undefined,
   images: {
