@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "deploy": "gh-pages -d out"
+    "deploy": "gh-pages -d out",
+    "export": "NEXT_PUBLIC_BASE_PATH= next build"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",

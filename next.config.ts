@@ -1,12 +1,14 @@
 import type { NextConfig } from "next";
 
-const isProduction = process.env.NODE_ENV === "production";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH?.trim() || "";
+const normalizedBasePath = basePath && basePath !== "/" ? basePath : "";
+const assetPrefix = normalizedBasePath ? `${normalizedBasePath}/` : undefined;
 
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
-  basePath: isProduction ? "/code.quest" : undefined,
-  assetPrefix: isProduction ? "/code.quest/" : undefined,
+  basePath: normalizedBasePath || undefined,
+  assetPrefix,
   images: {
     unoptimized: true,
   },

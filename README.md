@@ -4,7 +4,7 @@
 
 code.quest is a learning platform for programming languages, powered by AI. It delivers a series of small, progressively complex challenges, with AI pre-generating challenge sequences and providing realtime feedback as learners progress.
 
-<img width="1552" height="1051" alt="Image" src="https://github.com/user-attachments/assets/dd3bfbc5-e09d-44cb-8c87-25a710d654e1" />
+<img width="1233" height="835" alt="Image" src="https://github.com/user-attachments/assets/12df2b22-46d0-478f-86d7-9d549a80a9c7" />
 
 ## Stack
 
