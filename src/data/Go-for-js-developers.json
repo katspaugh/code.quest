@@ -1,0 +1,348 @@
+{
+  "id": "Go-for-js-developers",
+  "title": "Go for JavaScript developers",
+  "description": "A practical Go course that maps JavaScript mental models to idiomatic Go.",
+  "language": "go",
+  "challenges": [
+    {
+      "id": "go-01",
+      "title": "Hello, Go",
+      "summary": "Run your first Go program and print a message.",
+      "difficulty": "beginner",
+      "estimated_minutes": 20,
+      "skills": ["packages", "main", "fmt"],
+      "prompt": "Create a Go program that prints \"Hello, Go!\" and your name.",
+      "acceptance_criteria": [
+        "Program compiles",
+        "Output includes \"Hello, Go!\" and a name"
+      ],
+      "hints": [
+        "Every Go program starts in package main",
+        "Use fmt.Println to print a line"
+      ],
+      "extended_hints": [
+        "In Go, functions must be inside a package; the entry point is main() in package main.",
+        "Unlike JavaScript, you must import fmt before using fmt.Println."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  // TODO: print greeting\n}\n"
+    },
+    {
+      "id": "go-02",
+      "title": "Variables and Types",
+      "summary": "Declare variables with explicit and inferred types.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "skills": ["var", ":=", "types"],
+      "prompt": "Declare a string and an integer, then print both in a single line.",
+      "acceptance_criteria": [
+        "Uses at least one explicit type",
+        "Uses at least one inferred type",
+        "Prints both values"
+      ],
+      "hints": [
+        "Use var name type = value for explicit types",
+        "Use := for inferred types"
+      ],
+      "extended_hints": [
+        "Go is statically typed, so every variable has a fixed type unlike JavaScript.",
+        "The := syntax is similar to let in JS but only works inside functions."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  // TODO: add variables and print\n}\n"
+    },
+    {
+      "id": "go-03",
+      "title": "Functions and Returns",
+      "summary": "Create a function that returns a value.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "skills": ["functions", "return"],
+      "prompt": "Write a function add(a, b int) int that returns the sum, then print the result.",
+      "acceptance_criteria": [
+        "Defines add with typed parameters",
+        "Returns the sum",
+        "Prints the result"
+      ],
+      "hints": [
+        "Put the return type after the parameters",
+        "Call add in main"
+      ],
+      "extended_hints": [
+        "Go doesn’t have implicit returns like JS arrow functions; use return explicitly.",
+        "Parameter types can share a single type if they are the same: a, b int."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  // TODO: call add\n}\n"
+    },
+    {
+      "id": "go-04",
+      "title": "Conditionals",
+      "summary": "Branch logic with if/else.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "skills": ["if", "else"],
+      "prompt": "Write a function that returns \"large\" if a number is >= 10, otherwise \"small\".",
+      "acceptance_criteria": [
+        "Uses if/else",
+        "Returns correct string for both cases"
+      ],
+      "hints": [
+        "Go uses braces for blocks",
+        "Return strings with quotes"
+      ],
+      "extended_hints": [
+        "Go does not allow parentheses around the if condition like JavaScript.",
+        "You can short-declare variables inside if: if x := value; x > 10 {}"
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\nfunc labelSize(n int) string {\n  // TODO: implement\n  return \"\"\n}\n\nfunc main() {\n  fmt.Println(labelSize(12))\n}\n"
+    },
+    {
+      "id": "go-05",
+      "title": "Loops",
+      "summary": "Use for loops for counting and iteration.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "skills": ["for", "looping"],
+      "prompt": "Print the numbers 1 through 5 using a for loop.",
+      "acceptance_criteria": [
+        "Uses a for loop",
+        "Outputs numbers 1 through 5"
+      ],
+      "hints": [
+        "Go only has for for looping",
+        "Use i := 1; i <= 5; i++"
+      ],
+      "extended_hints": [
+        "There is no while keyword in Go; use for with a condition instead.",
+        "The ++ operator is a statement, not an expression as in JS."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  // TODO: loop and print\n}\n"
+    },
+    {
+      "id": "go-06",
+      "title": "Slices",
+      "summary": "Work with dynamic arrays in Go.",
+      "difficulty": "beginner",
+      "estimated_minutes": 30,
+      "skills": ["slices", "append"],
+      "prompt": "Create a slice of three favorite tools and append a fourth one, then print them.",
+      "acceptance_criteria": [
+        "Uses a slice literal",
+        "Appends one item",
+        "Prints all items"
+      ],
+      "hints": [
+        "Slices use []type",
+        "Use append to add items"
+      ],
+      "extended_hints": [
+        "Slices are like JS arrays but with a fixed element type.",
+        "append returns a new slice; assign it back to the variable."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  // TODO: build slice and append\n}\n"
+    },
+    {
+      "id": "go-07",
+      "title": "Maps",
+      "summary": "Store key/value data with maps.",
+      "difficulty": "beginner",
+      "estimated_minutes": 30,
+      "skills": ["maps", "lookup"],
+      "prompt": "Create a map of framework names to popularity scores and print one score.",
+      "acceptance_criteria": [
+        "Uses a map literal",
+        "Reads a value by key"
+      ],
+      "hints": [
+        "Maps use map[keyType]valueType",
+        "Use mapName[key] to access"
+      ],
+      "extended_hints": [
+        "Maps are like JS objects but with explicit key/value types.",
+        "Reading a missing key returns the zero value and a boolean ok flag."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  // TODO: define map and print value\n}\n"
+    },
+    {
+      "id": "go-08",
+      "title": "Structs",
+      "summary": "Define structured data with structs.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 35,
+      "skills": ["structs", "fields"],
+      "prompt": "Define a struct for a Course with title and level fields, then create and print one.",
+      "acceptance_criteria": [
+        "Defines a struct type",
+        "Creates a struct value",
+        "Prints at least one field"
+      ],
+      "hints": [
+        "Struct fields are declared inside type ... struct",
+        "Access fields with dot notation"
+      ],
+      "extended_hints": [
+        "Structs are closer to JS objects with fixed fields and types.",
+        "You can create struct values with field names: Course{Title: \"...\"}."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\ntype Course struct {\n  // TODO: fields\n}\n\nfunc main() {\n  // TODO: create and print\n}\n"
+    },
+    {
+      "id": "go-09",
+      "title": "Methods",
+      "summary": "Attach behavior to structs with methods.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 35,
+      "skills": ["methods", "receivers"],
+      "prompt": "Add a method on Course that returns a display label, then call it.",
+      "acceptance_criteria": [
+        "Defines a method with a receiver",
+        "Returns a string",
+        "Calls the method"
+      ],
+      "hints": [
+        "Methods look like functions with a receiver",
+        "Receiver goes before the function name"
+      ],
+      "extended_hints": [
+        "Receiver methods are similar to class methods, but Go has no classes.",
+        "Use value receivers unless you need to mutate the struct."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\ntype Course struct {\n  Title string\n  Level string\n}\n\nfunc main() {\n  // TODO: call method\n}\n"
+    },
+    {
+      "id": "go-10",
+      "title": "Error Handling",
+      "summary": "Return errors instead of throwing exceptions.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 35,
+      "skills": ["errors", "fmt.Errorf"],
+      "prompt": "Write a function that divides two numbers and returns an error when dividing by zero.",
+      "acceptance_criteria": [
+        "Returns a value and an error",
+        "Returns an error on division by zero",
+        "Handles the error in main"
+      ],
+      "hints": [
+        "Use return value, error",
+        "Use fmt.Errorf to create an error"
+      ],
+      "extended_hints": [
+        "Go uses explicit error returns instead of try/catch.",
+        "The zero value for float64 is 0.0, which is useful for error cases."
+      ],
+      "starter_code": "package main\n\nimport (\n  \"fmt\"\n)\n\nfunc divide(a, b float64) (float64, error) {\n  // TODO: implement\n  return 0, nil\n}\n\nfunc main() {\n  // TODO: call divide and handle error\n}\n"
+    },
+    {
+      "id": "go-11",
+      "title": "Pointers",
+      "summary": "Understand references and mutation.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 40,
+      "skills": ["pointers", "mutation"],
+      "prompt": "Write a function that increments an int using a pointer, then demonstrate it.",
+      "acceptance_criteria": [
+        "Function accepts *int",
+        "Function mutates the value",
+        "Main shows the updated value"
+      ],
+      "hints": [
+        "Use * to dereference",
+        "Use & to take an address"
+      ],
+      "extended_hints": [
+        "Pointers in Go are similar to JS objects passed by reference, but explicit.",
+        "Only use pointers when you need to mutate or avoid copying."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\nfunc increment(n *int) {\n  // TODO: implement\n}\n\nfunc main() {\n  value := 1\n  increment(&value)\n  fmt.Println(value)\n}\n"
+    },
+    {
+      "id": "go-12",
+      "title": "Interfaces",
+      "summary": "Use interfaces for shared behavior.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 40,
+      "skills": ["interfaces", "polymorphism"],
+      "prompt": "Create a Speaker interface with Speak() string and implement it for two structs.",
+      "acceptance_criteria": [
+        "Defines an interface",
+        "Implements Speak on two types",
+        "Calls Speak via the interface"
+      ],
+      "hints": [
+        "Interfaces are satisfied implicitly",
+        "A struct implements an interface by having the methods"
+      ],
+      "extended_hints": [
+        "Go interfaces are like structural typing in TypeScript.",
+        "You do not need an explicit implements keyword."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\ntype Speaker interface {\n  Speak() string\n}\n\nfunc main() {\n  // TODO: implement and call\n}\n"
+    },
+    {
+      "id": "go-13",
+      "title": "Concurrency with Goroutines",
+      "summary": "Run work concurrently using goroutines.",
+      "difficulty": "advanced",
+      "estimated_minutes": 45,
+      "skills": ["goroutines", "concurrency"],
+      "prompt": "Launch two goroutines that print different messages and wait for both to finish.",
+      "acceptance_criteria": [
+        "Uses go keyword",
+        "Ensures main waits for both goroutines"
+      ],
+      "hints": [
+        "Use sync.WaitGroup",
+        "Call wg.Add, wg.Done, wg.Wait"
+      ],
+      "extended_hints": [
+        "Goroutines are lightweight threads managed by the Go runtime.",
+        "WaitGroup is the simplest way to wait for multiple goroutines."
+      ],
+      "starter_code": "package main\n\nimport (\n  \"fmt\"\n  \"sync\"\n)\n\nfunc main() {\n  var wg sync.WaitGroup\n  // TODO: add goroutines and wait\n}\n"
+    },
+    {
+      "id": "go-14",
+      "title": "Channels",
+      "summary": "Communicate between goroutines.",
+      "difficulty": "advanced",
+      "estimated_minutes": 45,
+      "skills": ["channels", "communication"],
+      "prompt": "Create a goroutine that sends a message over a channel and print it in main.",
+      "acceptance_criteria": [
+        "Creates a channel",
+        "Sends a value from a goroutine",
+        "Receives and prints the value"
+      ],
+      "hints": [
+        "Channels use make(chan type)",
+        "Send with ch <- value"
+      ],
+      "extended_hints": [
+        "Channels are typed pipes; they help avoid shared memory.",
+        "Receiving blocks until a value is available."
+      ],
+      "starter_code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n  // TODO: create channel, start goroutine, receive\n}\n"
+    },
+    {
+      "id": "go-15",
+      "title": "Build a CLI Task List",
+      "summary": "Combine structs, slices, and file I/O for a small project.",
+      "difficulty": "advanced",
+      "estimated_minutes": 45,
+      "skills": ["file I/O", "structs", "slices"],
+      "prompt": "Create a CLI that stores tasks in a slice and writes them to a file as plain text.",
+      "acceptance_criteria": [
+        "Stores tasks in memory",
+        "Writes tasks to a file",
+        "Prints a confirmation message"
+      ],
+      "hints": [
+        "Use os.Create or os.WriteFile",
+        "Build output with strings.Builder"
+      ],
+      "extended_hints": [
+        "os.WriteFile is like fs.writeFileSync but returns an error.",
+        "strings.Builder is efficient for concatenating many strings."
+      ],
+      "starter_code": "package main\n\nimport (\n  \"fmt\"\n  \"os\"\n  \"strings\"\n)\n\nfunc main() {\n  // TODO: build tasks and write file\n}\n"
+    }
+  ]
+}

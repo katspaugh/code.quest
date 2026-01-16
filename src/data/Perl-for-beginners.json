@@ -1,0 +1,374 @@
+{
+  "id": "Perl-for-beginners",
+  "title": "Perl for Beginners",
+  "description": "20-step quest sequence for learning Perl fundamentals.",
+  "language": "perl",
+  "challenges": [
+    {
+      "id": "perl-01",
+      "title": "Hello, Perl",
+      "summary": "Write your first Perl script and print a friendly message.",
+      "difficulty": "beginner",
+      "estimated_minutes": 15,
+      "skills": ["basic syntax", "printing", "running scripts"],
+      "prompt": "Create a Perl script that prints \"Hello, Perl!\" followed by your name.",
+      "acceptance_criteria": [
+        "Script runs without errors",
+        "Output includes \"Hello, Perl!\" and a name"
+      ],
+      "hints": [
+        "Use the print function",
+        "Remember to end statements with semicolons"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-02",
+      "title": "Variables and Strings",
+      "summary": "Use variables to build and print a sentence.",
+      "difficulty": "beginner",
+      "estimated_minutes": 20,
+      "skills": ["scalars", "string interpolation"],
+      "prompt": "Store your favorite language in a variable and print a sentence using interpolation.",
+      "acceptance_criteria": [
+        "Uses a scalar variable",
+        "Printed sentence includes the variable value"
+      ],
+      "hints": [
+        "Scalars start with $",
+        "Double quotes allow interpolation"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-03",
+      "title": "User Input",
+      "summary": "Read a line of input and respond.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "skills": ["STDIN", "chomp"],
+      "prompt": "Ask for a user's name, read input, and greet them by name.",
+      "acceptance_criteria": [
+        "Prompts the user",
+        "Reads from STDIN",
+        "Removes the trailing newline",
+        "Greets the user by name"
+      ],
+      "hints": [
+        "Use <STDIN> to read input",
+        "chomp removes the newline"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-04",
+      "title": "Basic Math",
+      "summary": "Perform arithmetic operations and print results.",
+      "difficulty": "beginner",
+      "estimated_minutes": 20,
+      "skills": ["operators", "numeric variables"],
+      "prompt": "Given two numbers, print their sum, difference, product, and quotient.",
+      "acceptance_criteria": [
+        "Performs all four operations",
+        "Handles division safely when the second number is non-zero"
+      ],
+      "hints": [
+        "Use +, -, *, / operators",
+        "Consider checking for zero before division"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-05",
+      "title": "Conditional Logic",
+      "summary": "Decide which message to show based on user input.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "skills": ["if/elsif/else", "comparisons"],
+      "prompt": "Ask for a number and print whether it is negative, zero, or positive.",
+      "acceptance_criteria": [
+        "Reads a number from input",
+        "Correctly identifies negative, zero, or positive"
+      ],
+      "hints": [
+        "Use numeric comparison operators like < and >",
+        "Handle zero in its own branch"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-06",
+      "title": "Loops 101",
+      "summary": "Use a loop to repeat an action.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "skills": ["for loop", "ranges"],
+      "prompt": "Print the numbers from 1 to 10, each on a new line.",
+      "acceptance_criteria": [
+        "Uses a loop",
+        "Outputs numbers 1 through 10 in order"
+      ],
+      "hints": [
+        "Use for (1..10)",
+        "print each number with a newline"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-07",
+      "title": "While Loop Practice",
+      "summary": "Keep looping until a condition is met.",
+      "difficulty": "beginner",
+      "estimated_minutes": 30,
+      "skills": ["while loop", "input validation"],
+      "prompt": "Keep asking the user for a password until they enter \"open-sesame\".",
+      "acceptance_criteria": [
+        "Prompts repeatedly until correct input",
+        "Stops when the exact password is entered"
+      ],
+      "hints": [
+        "Use a while loop with a condition",
+        "Compare strings with eq"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-08",
+      "title": "Arrays and Indexing",
+      "summary": "Store and access multiple values.",
+      "difficulty": "beginner",
+      "estimated_minutes": 30,
+      "skills": ["arrays", "indexing", "push"],
+      "prompt": "Create an array of five favorite foods and print the first and last items.",
+      "acceptance_criteria": [
+        "Uses an array",
+        "Prints first and last elements"
+      ],
+      "hints": [
+        "Arrays use @",
+        "Last index is $#array"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-09",
+      "title": "Array Iteration",
+      "summary": "Process each element in an array.",
+      "difficulty": "beginner",
+      "estimated_minutes": 30,
+      "skills": ["foreach", "arrays"],
+      "prompt": "Given an array of numbers, print each number and its square.",
+      "acceptance_criteria": [
+        "Iterates over the array",
+        "Prints number and square for each item"
+      ],
+      "hints": [
+        "Use foreach my $n (@numbers)",
+        "Square with $n * $n"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-10",
+      "title": "Hashes (Dictionaries)",
+      "summary": "Store key-value pairs and access them.",
+      "difficulty": "beginner",
+      "estimated_minutes": 35,
+      "skills": ["hashes", "key access"],
+      "prompt": "Create a hash of three countries and their capitals, then print each pair.",
+      "acceptance_criteria": [
+        "Uses a hash",
+        "Outputs each country with its capital"
+      ],
+      "hints": [
+        "Hashes use %",
+        "Iterate with each or keys"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-11",
+      "title": "Subroutines",
+      "summary": "Write and call a reusable function.",
+      "difficulty": "beginner",
+      "estimated_minutes": 35,
+      "skills": ["subroutines", "arguments", "return values"],
+      "prompt": "Write a subroutine that takes two numbers and returns the larger one.",
+      "acceptance_criteria": [
+        "Defines a subroutine",
+        "Returns the correct larger value"
+      ],
+      "hints": [
+        "Access arguments via @_",
+        "Use return to send back a value"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-12",
+      "title": "File Reading Basics",
+      "summary": "Open and read a file line by line.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 40,
+      "skills": ["file I/O", "open", "while loop"],
+      "prompt": "Read a text file and print each line with its line number.",
+      "acceptance_criteria": [
+        "Opens a file safely",
+        "Prints each line prefixed with a number"
+      ],
+      "hints": [
+        "Use open with a filehandle",
+        "Increment a counter inside the loop"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-13",
+      "title": "File Writing",
+      "summary": "Create a new file and write content to it.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 35,
+      "skills": ["file I/O", "writing"],
+      "prompt": "Ask for three notes from the user and write them to a file, one per line.",
+      "acceptance_criteria": [
+        "Creates or overwrites a file",
+        "Writes three lines"
+      ],
+      "hints": [
+        "Open with \"\">\" to write",
+        "Use print with a filehandle"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-14",
+      "title": "Simple Regex Search",
+      "summary": "Find matches in a string using regex.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 35,
+      "skills": ["regex", "pattern matching"],
+      "prompt": "Given a sentence, count how many words start with the letter 's' or 'S'.",
+      "acceptance_criteria": [
+        "Counts words starting with s or S",
+        "Prints the total count"
+      ],
+      "hints": [
+        "Use \\b to mark word boundaries",
+        "Add the i flag for case-insensitive matches"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-15",
+      "title": "Mini Log Parser",
+      "summary": "Extract structured data from log lines.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 45,
+      "skills": ["regex", "file parsing", "data aggregation"],
+      "prompt": "Parse a log file where each line is \"LEVEL: message\" and count how many of each level occurs.",
+      "acceptance_criteria": [
+        "Reads the file line by line",
+        "Counts occurrences of each level",
+        "Prints a summary for each level"
+      ],
+      "hints": [
+        "Capture the level with a regex group",
+        "Use a hash to track counts"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-16",
+      "title": "Command-Line Arguments",
+      "summary": "Make your script respond to CLI arguments.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 35,
+      "skills": ["@ARGV", "input handling"],
+      "prompt": "Create a script that takes a word from the command line and prints it reversed.",
+      "acceptance_criteria": [
+        "Reads input from @ARGV",
+        "Prints the reversed word"
+      ],
+      "hints": [
+        "Use reverse on a string",
+        "Handle missing arguments gracefully"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-17",
+      "title": "Debugging a Broken Script",
+      "summary": "Fix bugs in a provided script so it works.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 40,
+      "skills": ["debugging", "reading error messages"],
+      "prompt": "Given a script that tries to sum numbers from a file but fails, identify and fix the errors so it outputs the correct sum.",
+      "acceptance_criteria": [
+        "Script runs without errors",
+        "Outputs the correct sum"
+      ],
+      "hints": [
+        "Check file open mode",
+        "Ensure variables are declared and initialized"
+      ],
+      "starter_code": "use strict;\nuse warnings;\n\nopen(my $fh, '<', $file) or die $!;\nmy $sum;\nwhile (my $line = <$fh>) {\n  $sum = $sum + $line;\n}\nprint \"Sum: $sum\\n\";\n"
+    },
+    {
+      "id": "perl-18",
+      "title": "Data Transformation",
+      "summary": "Transform input data into a new format.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 45,
+      "skills": ["arrays", "hashes", "data processing"],
+      "prompt": "Read a CSV of \"name,score\" pairs and output a sorted list of names by highest score.",
+      "acceptance_criteria": [
+        "Parses CSV lines",
+        "Sorts by score descending",
+        "Outputs names in sorted order"
+      ],
+      "hints": [
+        "Split each line on commas",
+        "Use sort with a custom comparator"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-19",
+      "title": "Mini CLI Tool",
+      "summary": "Build a small utility with multiple commands.",
+      "difficulty": "advanced",
+      "estimated_minutes": 45,
+      "skills": ["subroutines", "argument parsing", "control flow"],
+      "prompt": "Create a CLI tool with commands: add, multiply, and help. Usage: script.pl add 2 3.",
+      "acceptance_criteria": [
+        "Supports add and multiply commands",
+        "Displays help for unknown commands",
+        "Handles missing arguments"
+      ],
+      "hints": [
+        "Inspect @ARGV for the command",
+        "Create a help subroutine"
+      ],
+      "starter_code": ""
+    },
+    {
+      "id": "perl-20",
+      "title": "Refactor for Clarity",
+      "summary": "Clean up an existing script to improve readability and structure.",
+      "difficulty": "advanced",
+      "estimated_minutes": 45,
+      "skills": ["refactoring", "modularization", "naming"],
+      "prompt": "Refactor a monolithic script that validates emails into small, named subroutines without changing behavior.",
+      "acceptance_criteria": [
+        "Behavior matches the original script",
+        "Logic is split into smaller subroutines",
+        "Names are clear and descriptive"
+      ],
+      "hints": [
+        "Extract parsing and validation steps",
+        "Keep input/output behavior identical"
+      ],
+      "starter_code": "use strict;\nuse warnings;\n\nmy $input = <STDIN>;\nchomp $input;\nif ($input =~ /^[\\w.+-]+@[\\w.-]+\\.[A-Za-z]{2,}$/) {\n  print \"valid\\n\";\n} else {\n  print \"invalid\\n\";\n}\n"
+    }
+  ]
+}

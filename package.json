@@ -6,12 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "@supabase/supabase-js": "^2.90.1",
+    "effect": "^3.19.14",
     "next": "16.1.2",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "xstate": "^5.25.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -20,6 +25,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.2",
+    "gh-pages": "^6.3.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

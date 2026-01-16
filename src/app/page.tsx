@@ -1,65 +1,386 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Editor from "@monaco-editor/react";
+import "monaco-editor/esm/vs/basic-languages/go/go.contribution";
+import "monaco-editor/esm/vs/basic-languages/perl/perl.contribution";
+import perlCourse from "@/data/Perl-for-beginners.json";
+import goCourse from "@/data/Go-for-js-developers.json";
+import courses from "@/data/courses.json";
+
+const courseMap = {
+  "Perl-for-beginners": perlCourse,
+  "Go-for-js-developers": goCourse,
+} as const;
+
+type CourseId = keyof typeof courseMap;
+
+type CourseSummary = {
+  id: string;
+  title: string;
+  description: string;
+  language: string;
+  challengeCount: number;
+};
+
+type Challenge = {
+  id: string;
+  title: string;
+  summary: string;
+  difficulty: "beginner" | "intermediate" | "advanced";
+  estimated_minutes: number;
+  skills: string[];
+  prompt: string;
+  acceptance_criteria: string[];
+  hints: string[];
+  extended_hints?: string[];
+  starter_code: string;
+};
+
+type FeedbackResponse = {
+  result: "ok" | "needs_work";
+  feedback: string;
+};
 
 export default function Home() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const courseId = searchParams.get("course") as CourseId | null;
+  const course = courseId ? courseMap[courseId] : undefined;
+  const editorLanguage = course?.language ?? "plaintext";
+  const stepParam = Number(searchParams.get("step") || "1");
+  const [apiKey, setApiKey] = useState("");
+  const [code, setCode] = useState("");
+  const [feedback, setFeedback] = useState<FeedbackResponse | null>(null);
+  const [feedbackText, setFeedbackText] = useState("Awaiting feedback...");
+  const [isLoading, setIsLoading] = useState(false);
+  const [challengeIndex, setChallengeIndex] = useState(0);
+  const [showApiKeyInput, setShowApiKeyInput] = useState(true);
+  const [showExtendedHints, setShowExtendedHints] = useState(false);
+
+  const handleApiKeyChange = (value: string) => {
+    setApiKey(value);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("code.quest.apiKey", value);
+    }
+    if (value.length > 0) {
+      setShowApiKeyInput(false);
+    }
+  };
+
+  const updateUrlStep = (nextIndex: number) => {
+    if (!courseId) {
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("course", courseId);
+    params.set("step", String(nextIndex + 1));
+    router.replace(`/?${params.toString()}`);
+  };
+
+  const openCourse = (selectedCourseId: CourseId) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("course", selectedCourseId);
+    params.set("step", "1");
+    router.push(`/?${params.toString()}`);
+  };
+
+  useEffect(() => {
+    const storedKey = window.localStorage.getItem("code.quest.apiKey");
+    if (storedKey) {
+      setApiKey(storedKey);
+      setShowApiKeyInput(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!course) {
+      return;
+    }
+
+    const totalChallenges = course.challenges.length;
+    const normalizedStep = Number.isNaN(stepParam)
+      ? 1
+      : Math.min(Math.max(stepParam, 1), totalChallenges);
+    const nextIndex = normalizedStep - 1;
+
+    if (nextIndex !== challengeIndex) {
+      setChallengeIndex(nextIndex);
+      const starter = course.challenges[nextIndex]?.starter_code || "";
+      setCode(starter);
+      setFeedback(null);
+      setFeedbackText("Awaiting feedback...");
+      setShowExtendedHints(false);
+    }
+
+    if (!searchParams.get("step")) {
+      updateUrlStep(nextIndex);
+    }
+  }, [course, stepParam, challengeIndex, searchParams]);
+
+  const activeChallenge = useMemo<Challenge | undefined>(() => {
+    return course?.challenges?.[challengeIndex];
+  }, [course, challengeIndex]);
+
+  const handleNextChallenge = () => {
+    if (!course) {
+      return;
+    }
+
+    const nextIndex = Math.min(challengeIndex + 1, course.challenges.length - 1);
+    setChallengeIndex(nextIndex);
+    const starter = course.challenges[nextIndex]?.starter_code || "";
+    setCode(starter);
+    setFeedback(null);
+    setFeedbackText("Awaiting feedback...");
+    setShowExtendedHints(false);
+    updateUrlStep(nextIndex);
+  };
+
+  const requestFeedback = async () => {
+    if (!activeChallenge) {
+      setFeedback(null);
+      setFeedbackText("No challenge found for this course.");
+      return;
+    }
+
+    if (!apiKey) {
+      setFeedback(null);
+      setFeedbackText("Please add your OpenAI API key first.");
+      return;
+    }
+
+    setIsLoading(true);
+    setFeedback(null);
+    setFeedbackText("Requesting feedback...");
+
+    try {
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code,
+          prompt: `${activeChallenge.prompt}\n\nMinimum requirements:\n- ${activeChallenge.acceptance_criteria.join(
+            "\n- "
+          )}`,
+          apiKey,
+        }),
+      });
+
+      const data = (await response.json()) as
+        | FeedbackResponse
+        | { error?: string; detail?: unknown };
+
+      if (!response.ok) {
+        const errorMessage =
+          "error" in data && typeof data.error === "string"
+            ? data.error
+            : "OpenAI request failed.";
+
+        setFeedback(null);
+        setFeedbackText(errorMessage);
+
+        if (response.status === 429) {
+          setShowApiKeyInput(true);
+        }
+        return;
+      }
+
+      if ("result" in data && "feedback" in data) {
+        setFeedback(data);
+        setFeedbackText(data.feedback || "All requirements satisfied.");
+        return;
+      }
+
+      setFeedback(null);
+      setFeedbackText("Invalid feedback response.");
+    } catch (error) {
+      setFeedback(null);
+      setFeedbackText(`Request failed: ${String(error)}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100">
+        <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 py-16">
+          <header className="flex flex-col gap-4">
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="text-sm uppercase tracking-[0.3em] text-slate-400 transition hover:text-slate-200"
+            >
+              code.quest
+            </button>
+            <div>
+              <h1 className="text-3xl font-semibold text-white sm:text-4xl">
+                Choose your next quest
+              </h1>
+              <p className="mt-2 max-w-2xl text-slate-300">
+                Pick a course to jump into AI-guided challenges.
+              </p>
+            </div>
+          </header>
+
+          <section className="mt-10 grid gap-6 sm:grid-cols-2">
+            {(courses as CourseSummary[]).map((courseItem) => (
+              <button
+                key={courseItem.id}
+                type="button"
+                onClick={() => openCourse(courseItem.id as CourseId)}
+                className="flex h-full flex-col justify-between rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-left transition hover:border-indigo-400"
+              >
+                <div>
+                  <h2 className="text-xl font-semibold text-white">
+                    {courseItem.title}
+                  </h2>
+                  <p className="mt-2 text-sm text-slate-300">
+                    {courseItem.description}
+                  </p>
+                </div>
+                <p className="mt-6 text-xs uppercase tracking-[0.2em] text-slate-400">
+                  {courseItem.challengeCount} challenges
+                </p>
+              </button>
+            ))}
+          </section>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-slate-950 text-slate-100">
+      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-10">
+        <header className="flex flex-col gap-4">
+          <button
+            type="button"
+            onClick={() => router.push("/")}
+            className="text-sm uppercase tracking-[0.3em] text-slate-400 transition hover:text-slate-200"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            code.quest
+          </button>
+          <div>
+            <h1 className="text-3xl font-semibold text-white sm:text-4xl">
+              {course.title}
+            </h1>
+            <p className="mt-2 max-w-3xl text-slate-300">{course.description}</p>
+          </div>
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-lg font-semibold text-white">
+                Current challenge: {activeChallenge?.title}
+              </h2>
+              <span className="rounded-full border border-slate-800 px-3 py-1 text-xs text-slate-300">
+                Step {challengeIndex + 1} of {course.challenges.length}
+              </span>
+            </div>
+            <p className="mt-2 text-sm text-slate-300">
+              {activeChallenge?.summary}
+            </p>
+            <p className="mt-3 text-sm text-slate-400">
+              {activeChallenge?.prompt}
+            </p>
+            <div className="mt-4 text-xs text-slate-400">
+              Minimum requirements:
+              <ul className="mt-2 list-disc space-y-1 pl-4">
+                {activeChallenge?.acceptance_criteria.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+            {activeChallenge?.extended_hints?.length ? (
+              <div className="mt-4">
+                <button
+                  type="button"
+                  className="text-xs font-semibold text-indigo-300 transition hover:text-indigo-200"
+                  onClick={() => setShowExtendedHints((value) => !value)}
+                >
+                  {showExtendedHints ? "Hide syntax tips" : "Show syntax tips"}
+                </button>
+                {showExtendedHints ? (
+                  <ul className="mt-3 list-disc space-y-1 pl-4 text-xs text-slate-300">
+                    {activeChallenge.extended_hints.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </header>
+
+        <main className="mt-8 grid flex-1 gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <section className="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <h3 className="text-base font-semibold">Editor</h3>
+                <p className="text-xs text-slate-400">
+                  Language: {course.language}
+                </p>
+              </div>
+              <button
+                className="rounded-full bg-indigo-500 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-400"
+                onClick={requestFeedback}
+                disabled={isLoading}
+              >
+                {isLoading ? "Requesting..." : "Get feedback"}
+              </button>
+            </div>
+            <div className="mt-4 flex-1 overflow-hidden rounded-xl border border-slate-800">
+              <Editor
+                height="100%"
+                defaultLanguage={editorLanguage}
+                theme="vs-dark"
+                value={code}
+                onChange={(value) => setCode(value ?? "")}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 14,
+                  padding: { top: 12, bottom: 12 },
+                }}
+              />
+            </div>
+          </section>
+
+          <section className="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+            <div className="border-b border-slate-800 pb-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="text-base font-semibold">AI Feedback</h3>
+                {feedback?.result === "ok" ? (
+                  <button
+                    className="rounded-full border border-emerald-400 px-4 py-2 text-xs font-semibold text-emerald-200 transition hover:border-emerald-300 hover:text-white"
+                    onClick={handleNextChallenge}
+                  >
+                    Next challenge
+                  </button>
+                ) : null}
+              </div>
+              {showApiKeyInput ? (
+                <div className="mt-3 rounded-lg border border-slate-800 bg-slate-950 p-3">
+                  <p className="text-xs text-slate-400">
+                    Provide your OpenAI API key to generate feedback.
+                  </p>
+                  <input
+                    type="password"
+                    placeholder="sk-..."
+                    value={apiKey}
+                    onChange={(event) => handleApiKeyChange(event.target.value)}
+                    className="mt-3 w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-indigo-400 focus:outline-none"
+                  />
+                </div>
+              ) : null}
+            </div>
+            <div className="mt-4 flex-1 whitespace-pre-wrap text-sm text-slate-200">
+              {feedbackText}
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
   );
 }

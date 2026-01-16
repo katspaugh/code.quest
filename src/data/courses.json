@@ -1,0 +1,16 @@
+[
+  {
+    "id": "Perl-for-beginners",
+    "title": "Perl for Beginners",
+    "description": "20-step quest sequence for learning Perl fundamentals.",
+    "language": "perl",
+    "challengeCount": 20
+  },
+  {
+    "id": "Go-for-js-developers",
+    "title": "Go for JavaScript developers",
+    "description": "A practical Go course that maps JavaScript mental models to idiomatic Go.",
+    "language": "go",
+    "challengeCount": 15
+  }
+]
